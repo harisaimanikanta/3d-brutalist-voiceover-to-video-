@@ -19,7 +19,7 @@ Lighting is storytelling. Global mood comes from **presets** blended continuousl
 | Portraits / orbits | `high-contrast-character`, `crimson-rim` | hard 3/4 key + red rim, no fill |
 | Microscopic world | `microscopic-green` | green key, red tissue rim, dense medium |
 
-Set `shot.lighting`; consecutive identical presets merge; changes cross-fade over `lighting.blendFrames`
+Set `shot.lighting` (and optionally `shot.lightingOverrides`); consecutive identical presets+overrides merge; changes cross-fade over `lighting.blendFrames`
 (default 36) centred on the boundary. Put lighting changes at transitions (inside an occlusion window, at a
 doorway threshold, behind a particle veil) so they feel motivated.
 
@@ -58,7 +58,8 @@ so dark sets read as dark, not as black voids.
 fix darkness locally (subject light, practicals, a per-shot exposure nudge), never by lifting the whole palette
 toward grey/pink. Moody ≠ black: a dark frame still shows the set's shapes and a clearly lit subject.
 If a still is too dark: 1) check the subject light reaches the subject (camera `target` on the subject),
-2) add practicals/spot pools, 3) raise `exposure` / `hemi` in a `shot.lighting` override. Never flatten with
+2) add practicals/spot pools, 3) raise `exposure` in `shot.lightingOverrides` (e.g. `{"exposure": 1.4}`; shallow-merged over the preset and
+cross-faded like a preset change). Never flatten with
 a big ambient light.
 
 ## Subject light (v3) — the frame must have a focus

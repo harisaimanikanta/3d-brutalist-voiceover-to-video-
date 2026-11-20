@@ -2,7 +2,7 @@
 """Transcribe a voiceover and/or align a written script to it, producing word-level timing.
 
   python3 transcribe.py VOICEOVER [--script narration.txt] [--out analysis/transcript.json]
-                        [--backend auto|faster-whisper|whisper|whisper-cpp|vosk|script-estimate]
+                        [--backend auto|faster-whisper|whisper|whisper-cpp|vosk|pocketsphinx|script-estimate]
                         [--model small.en] [--model-dir DIR] [--language en] [--inspection audio-inspection.json]
 
 Backends are detected, never assumed (first available wins with --backend auto):
@@ -10,6 +10,9 @@ Backends are detected, never assumed (first available wins with --backend auto):
   whisper          pip install openai-whisper    (model downloaded on first use)
   whisper-cpp      `whisper-cli`/`whisper-cpp` binary + ggml model via --model-dir/--model
   vosk             pip install vosk + model directory via --model-dir
+  pocketsphinx     pip install pocketsphinx (bundled US-English model: works fully OFFLINE, e.g. when model
+                   hosts are blocked). Lower word accuracy, but word timings are real; always pair it with
+                   --script so the script supplies the wording and the recogniser only supplies timing.
   script-estimate  NO speech recognition: distributes the supplied script over detected speech intervals,
                    snapping sentence ends to real pauses. Timing is approximate (flagged in output).
 
@@ -46,6 +49,8 @@ def available_backends(model_dir: str | None) -> list[str]:
         out.append("whisper-cpp")
     if importlib.util.find_spec("vosk") and model_dir:
         out.append("vosk")
+    if importlib.util.find_spec("pocketsphinx"):
+        out.append("pocketsphinx")
     return out
 
 
@@ -97,6 +102,35 @@ def asr_vosk(audio: Path, model_dir: str) -> list[dict]:
                 words += json.loads(rec.Result()).get("result", [])
         words += json.loads(rec.FinalResult()).get("result", [])
     return [{"text": w["word"], "start": w["start"], "end": w["end"], "conf": w.get("conf", 1)} for w in words]
+
+
+def asr_pocketsphinx(audio: Path) -> list[dict]:
+    """Offline ASR with the model bundled in the pocketsphinx wheel. Decodes speech chunk by chunk (split on
+    detected pauses) so long voiceovers stay fast and timestamps stay accurate."""
+    import wave
+    from pocketsphinx import Decoder
+    words = []
+    with tempfile.TemporaryDirectory() as tmp:
+        wav = Path(tmp) / "a.wav"
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(audio), "-ac", "1", "-ar", "16000", "-sample_fmt", "s16", str(wav)], check=True)
+        wf = wave.open(str(wav))
+        sr = wf.getframerate()
+        pcm = wf.readframes(wf.getnframes())
+        dec = Decoder(samprate=sr)
+        frame_s = 1.0 / dec.config["frate"] if "frate" in dec.config else 0.01
+        dur = len(pcm) / 2 / sr
+        chunks = [(c0, c1) for c0, c1 in speech_intervals(silences(audio), dur) if c1 - c0 > 0.05] or [(0.0, dur)]
+        for c0, c1 in chunks:
+            a0, a1 = max(0.0, c0 - 0.15), c1 + 0.15
+            dec.start_utt()
+            dec.process_raw(pcm[int(a0 * sr) * 2:int(a1 * sr) * 2], full_utt=True)
+            dec.end_utt()
+            for sg in dec.seg():
+                w = re.sub(r"\(\d+\)$", "", sg.word)
+                if w.startswith("<") or w.startswith("[") or w in ("<s>", "</s>", "<sil>"):
+                    continue
+                words.append({"text": w, "start": a0 + sg.start_frame * frame_s, "end": a0 + (sg.end_frame + 1) * frame_s, "conf": 1.0})
+    return words
 
 
 # ------------------------------------------------------------------------------------------------ script handling
@@ -318,6 +352,8 @@ def main():
             asr = asr_whisper_cpp(audio, str(Path(a.model_dir) / a.model) if a.model_dir and not a.model.endswith(".bin") else a.model, a.language)
         elif backend == "vosk":
             asr = asr_vosk(audio, a.model_dir)
+        elif backend == "pocketsphinx":
+            asr = asr_pocketsphinx(audio)
     except Exception as e:  # model download blocked, etc.
         if not script_text:
             sys.exit(f"error: backend {backend} failed: {e}")

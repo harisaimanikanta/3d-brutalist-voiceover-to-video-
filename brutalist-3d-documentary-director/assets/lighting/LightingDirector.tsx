@@ -69,10 +69,11 @@ export function lightingAt(schedule: LightingCue[], frame: number, blendFrames =
   const next = sorted[i + 1];
   const prev = sorted[i - 1];
   const half = blendFrames / 2;
-  if (next && next.preset !== sorted[i].preset && frame > sorted[i].end - half) {
+  const differs = (x: LightingCue, y: LightingCue) => x.preset !== y.preset || JSON.stringify(x.overrides ?? null) !== JSON.stringify(y.overrides ?? null);
+  if (next && differs(next, sorted[i]) && frame > sorted[i].end - half) {
     return blendPresets(cur, resolve(next), smoothstep(sorted[i].end - half, sorted[i].end + half, frame));
   }
-  if (prev && prev.preset !== sorted[i].preset && frame < sorted[i].start + half) {
+  if (prev && differs(prev, sorted[i]) && frame < sorted[i].start + half) {
     return blendPresets(resolve(prev), cur, smoothstep(sorted[i].start - half, sorted[i].start + half, frame));
   }
   return cur;

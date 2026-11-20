@@ -2459,7 +2459,7 @@
     "mood",
     "fog"
    ],
-   "version": "1.1.0",
+   "version": "1.1.1",
    "required": true,
    "dependencies": [
     "core.math",
@@ -2472,12 +2472,17 @@
     "lighting/LightingDirector.tsx",
     "lighting/lighting-presets.json"
    ],
-   "sha256": "a0b06d9bcccbad5a9bdce727546887f1ae4058c1eb1b99d6217c45f73d5488d3",
+   "sha256": "4c4218458fd9b350f870439b355caed0e3eaf0211492292900166797b77744e6",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: camera-relative subject light (preset.subject) for a clear focus in every frame"
+    },
+    {
+     "version": "1.1.1",
+     "date": "2026-11-20",
+     "note": "blend cues that differ only in overrides (shot.lightingOverrides)"
     }
    ]
   },

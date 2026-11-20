@@ -50,7 +50,7 @@ export const layout = layoutJson as unknown as WorldLayout;
 export const track = trackJson as unknown as BakedTrack;
 export const subtitles = (subtitlesJson as unknown as { cues: SubtitleCue[] }).cues;
 export interface ShotPost { dof?: number; bloom?: number; bloomThreshold?: number; ao?: number; contrast?: number; saturation?: number; vignette?: number; grain?: number }
-export const shotPlan = shotPlanJson as unknown as { shots: { id: string; startFrame: number; endFrame: number; lighting?: string; post?: ShotPost; environment?: string; activeZones?: string[] }[] };
+export const shotPlan = shotPlanJson as unknown as { shots: { id: string; startFrame: number; endFrame: number; lighting?: string; lightingOverrides?: Partial<import('./library/lighting/LightingDirector').LightingPreset>; post?: ShotPost; environment?: string; activeZones?: string[] }[] };
 
 /**
  * Narration-driven set management: a zone is mounted only while a shot within ±margin frames uses it
@@ -92,9 +92,11 @@ export const lightingSchedule: LightingCue[] = (() => {
   const out: LightingCue[] = [];
   for (const s of [...shotPlan.shots].sort((a, b) => a.startFrame - b.startFrame)) {
     const preset = s.lighting ?? 'industrial-red';
+    // shot.lightingOverrides: shallow overrides of the preset for this shot (e.g. {"exposure": 1.3}); blended like presets
+    const overrides = s.lightingOverrides;
     const prev = out[out.length - 1];
-    if (prev && prev.preset === preset) prev.end = s.endFrame;
-    else out.push({ start: s.startFrame, end: s.endFrame, preset });
+    if (prev && prev.preset === preset && JSON.stringify(prev.overrides ?? null) === JSON.stringify(overrides ?? null)) prev.end = s.endFrame;
+    else out.push({ start: s.startFrame, end: s.endFrame, preset, ...(overrides ? { overrides } : {}) });
   }
   return out;
 })();
