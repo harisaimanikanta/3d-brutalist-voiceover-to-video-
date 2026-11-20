@@ -52,7 +52,7 @@ The output must look like an art-directed cinematic documentary, not a prototype
 
 - **Sets, not rooms.** Use the dressed production sets in `environments/Sets.tsx`:
   - `PathologyLab`, `LectureTheatre`, `EndoscopyRoom`, `AnimalLab`, `CeremonyStage`, `PublicationDesk`, `InstituteExterior` and `RedSunHorizon`;
-  - `RoomShell` for new rooms (openings, dado, skirting, beams);
+  - `RoomShell` for new rooms (openings, dado, skirting, beams). Since v3 it also adds a brutalist structure layer by default: board-formed shutter joints and tie holes, a cast ledge band, beam corbels, a coffered ceiling and a service duct with cable tray (`structure={false}` to opt out, `ductWall` to choose the wall);
   - the dense period prop kit in `objects/Props80s.tsx`.
   - A new location should be at least this dense: layered foreground, midground and background, functional props, ceiling services and practical lights.
 - **Geometry:** use real dimensions with bevelled edges from `core/geometry.ts`, and instance any repeats. Never scale unit cubes.
@@ -65,7 +65,7 @@ The output must look like an art-directed cinematic documentary, not a prototype
   - Tune per preset (`lighting-presets.json` → `post`) and per shot (`shot.post`).
 - **Characters:** Figure v2, a sculpted, clothed and expressive figure with blinking, breathing and distance-driven walks. Animate actions plus expressions. For extreme close-ups, prefer a licensed rigged glTF (`objects/GLTFModel.tsx`).
 - **Text panels:** extruded 3D lettering (`objects/Text3D.tsx`, the bundled Oswald OFL font) or printed in-world textures. Never flat cards.
-- **Readable, focused frames (v3):** dark and moody, never murky. `PostFX` applies the preset `exposure` plus a small shadow `lift`; `LightingDirector` (given `cameraPosition`) adds a camera-relative subject light on the look target; bloom only triggers on emissives (HDR threshold 1.2). Every proof-of-concept still must hit mean luma 55–140 (printed by `render-project.sh … stills`) and have one obvious subject. → `references/lighting-guide.md#subject-light-v3--the-frame-must-have-a-focus`
+- **Readable, focused frames (v3):** keep the dark red brutalist palette; dark and moody, never murky. `PostFX` applies the preset `exposure` plus a small shadow `lift`; `LightingDirector` (given `cameraPosition`) adds a camera-relative subject light on the look target; bloom only triggers on emissives (HDR threshold 1.2). Every proof-of-concept still must hit mean luma 40–130 (printed by `render-project.sh … stills`) and have one obvious subject. → `references/lighting-guide.md#subject-light-v3--the-frame-must-have-a-focus`
 - **Asset checklist:** every asset either passes `references/asset-quality-checklist.md` or is marked `"quality": "placeholder"`.
 
 ## Production workflow (follow in order)

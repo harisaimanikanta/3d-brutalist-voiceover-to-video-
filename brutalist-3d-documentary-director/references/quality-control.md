@@ -22,8 +22,10 @@ raise the threshold. Intentional dark wipes must be declared as occluders with a
 Camera: motion purposeful and smooth · orbits reveal something · no wall/geometry clipping (camera inside a
 mesh outside an occluder window) · transitions read as physical passages.
 Scene: no missing environments (empty fog), no broken/floating models, characters grounded, no unintended
-intersections, materials present (no white/default), lighting motivated, frame not too dark (mean luma ≥ 55, printed by the
-stills step; subject readable) nor flat or washed out (≤ 140).
+intersections, materials present (no white/default), lighting motivated, frame not too dark (mean luma ≥ 40, printed by the
+stills step; subject readable) nor washed out (≤ 130; the red/black brutalist palette must survive).
+Density: no frame is a bare wall or an empty void; backgrounds show structure (shutter-board joints, ledges,
+coffers, ducts, colonnades, rubble) and at least one prop/structure layer in front of the subject's background.
 Focus: within 1 s a viewer knows where to look: the subject is the brightest/most contrasty area, is not the
 same colour as its background, sits in the DoF focal plane, and no bloom halo sits on skin, hair or fabric.
 Story: each beat's visual purpose visible within ~1 s · metaphors understandable · facts depicted correctly ·

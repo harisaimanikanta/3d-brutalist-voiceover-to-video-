@@ -55,11 +55,11 @@ class ExposureEffect extends Effect {
   }
 }
 
-// v3 defaults: HDR bloom threshold (>1) so only emissives/practicals glow — lit skin and paper no longer
-// bloom; lighter vignette and grain; ambient occlusion tighter so contact shadows read without muddying.
+// v3 defaults: HDR bloom threshold (>1) so only emissives/practicals glow (lit skin, hair and paper no longer
+// bloom); a tiny shadow lift keeps detail in the blacks without lifting the dark brutalist mood.
 export const POST_DEFAULTS: Required<Omit<PostFXProps, 'quality' | 'focusDistance' | 'toneMapping'>> = {
-  dof: 0.4, bloom: 0.7, bloomThreshold: 1.2, ao: 2.0, aoRadius: 0.8, contrast: 0.1, saturation: 0.06, vignette: 0.38, grain: 0.035,
-  exposure: 1.0, lift: 0.012,
+  dof: 0.4, bloom: 0.8, bloomThreshold: 1.2, ao: 2.5, aoRadius: 0.9, contrast: 0.12, saturation: 0.12, vignette: 0.5, grain: 0.045,
+  exposure: 1.0, lift: 0.01,
 };
 
 export function PostFX(props: PostFXProps) {

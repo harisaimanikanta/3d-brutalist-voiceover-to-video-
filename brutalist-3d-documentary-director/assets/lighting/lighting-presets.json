@@ -1,17 +1,17 @@
 {
- "$comment": "Emotion-driven global lighting presets. Directions are the direction the light travels FROM (world space, normalized at runtime). Intensities are three.js physical units (r155+). Zone practicals (slot lights, spots) add on top. v2: each preset also carries `environment` (IBL intensity) and `post` defaults (bloom, ao, contrast, saturation, vignette, grain; shot.post overrides). v3: `exposure` is now really applied in post (it was ignored before); hemi/fill/IBL lifted and fog thinned slightly so shadows keep detail; each preset carries `subject`, a camera-relative soft spot on the look target that makes the subject the brightest, most readable thing in frame.",
+ "$comment": "Emotion-driven global lighting presets. Directions are the direction the light travels FROM (world space, normalized at runtime). Intensities are three.js physical units (r155+). Zone practicals (slot lights, spots) add on top. v2: each preset also carries `environment` (IBL intensity) and `post` defaults (bloom, ao, contrast, saturation, vignette, grain; shot.post overrides). v3: `exposure` is now really applied in post (it was ignored before, so values stay as authored); each preset carries `subject`, a soft camera-relative spot on the look target that gives the frame a focus without lifting the dark red mood.",
  "presets": {
   "mystery": {
    "description": "Deep red backlight, limited visibility, heavy haze.",
-   "background": "#0c0506",
+   "background": "#070203",
    "fog": {
-    "color": "#26060a",
-    "density": 0.0315
+    "color": "#1a0306",
+    "density": 0.045
    },
    "hemi": {
     "sky": "#3a0a0e",
-    "ground": "#0a0405",
-    "intensity": 0.438
+    "ground": "#050102",
+    "intensity": 0.35
    },
    "key": {
     "color": "#ff2a2a",
@@ -33,46 +33,46 @@
    },
    "fill": {
     "color": "#2a0508",
-    "intensity": 0.25,
+    "intensity": 0.15,
     "dir": [
      1,
      0.2,
      0.6
     ]
    },
-   "exposure": 1.0,
+   "exposure": 1.15,
    "grade": {
     "tint": "#5a0008",
-    "tintOpacity": 0.108,
-    "vignette": 0.6,
+    "tintOpacity": 0.18,
+    "vignette": 0.75,
     "grain": 0.07
    },
    "post": {
     "bloom": 0.9,
-    "ao": 2.21,
+    "ao": 2.6,
     "contrast": 0.14,
-    "vignette": 0.51,
-    "grain": 0.038
+    "vignette": 0.65,
+    "grain": 0.05
    },
    "environment": {
-    "intensity": 0.28
+    "intensity": 0.15
    },
    "subject": {
-    "color": "#ffe9dc",
-    "intensity": 1.8
+    "color": "#ffe2d2",
+    "intensity": 1.1
    }
   },
   "discovery": {
    "description": "Controlled toxic-green emissive focus within red darkness.",
-   "background": "#080a08",
+   "background": "#040604",
    "fog": {
-    "color": "#0d180a",
-    "density": 0.021
+    "color": "#081006",
+    "density": 0.03
    },
    "hemi": {
     "sky": "#1a2a10",
-    "ground": "#0a0a0a",
-    "intensity": 0.438
+    "ground": "#050505",
+    "intensity": 0.35
    },
    "key": {
     "color": "#b6f04a",
@@ -94,7 +94,7 @@
    },
    "fill": {
     "color": "#1a2a0a",
-    "intensity": 0.3,
+    "intensity": 0.2,
     "dir": [
      1,
      0.1,
@@ -104,35 +104,35 @@
    "exposure": 1.05,
    "grade": {
     "tint": "#203a00",
-    "tintOpacity": 0.06,
-    "vignette": 0.52,
+    "tintOpacity": 0.1,
+    "vignette": 0.65,
     "grain": 0.06
    },
    "post": {
     "bloom": 1.2,
-    "ao": 1.87,
+    "ao": 2.2,
     "contrast": 0.1,
-    "vignette": 0.468
+    "vignette": 0.55
    },
    "environment": {
-    "intensity": 0.286
+    "intensity": 0.22
    },
    "subject": {
-    "color": "#ffe9dc",
-    "intensity": 2.4
+    "color": "#ffe2d2",
+    "intensity": 1.6
    }
   },
   "rejection": {
    "description": "Cold, oppressive concrete, hard top-down shadows, desaturated.",
-   "background": "#101011",
+   "background": "#0a0a0b",
    "fog": {
-    "color": "#1b1b1e",
-    "density": 0.0175
+    "color": "#121214",
+    "density": 0.025
    },
    "hemi": {
     "sky": "#5a5c62",
-    "ground": "#111111",
-    "intensity": 0.562
+    "ground": "#0a0a0a",
+    "intensity": 0.45
    },
    "key": {
     "color": "#dfe4ee",
@@ -154,7 +154,7 @@
    },
    "fill": {
     "color": "#1a1c22",
-    "intensity": 0.25,
+    "intensity": 0.1,
     "dir": [
      1,
      0,
@@ -164,36 +164,36 @@
    "exposure": 0.95,
    "grade": {
     "tint": "#20242c",
-    "tintOpacity": 0.12,
-    "vignette": 0.64,
+    "tintOpacity": 0.2,
+    "vignette": 0.8,
     "grain": 0.08
    },
    "post": {
     "bloom": 0.5,
-    "ao": 2.55,
+    "ao": 3.0,
     "contrast": 0.16,
     "saturation": -0.2,
-    "vignette": 0.51
+    "vignette": 0.7
    },
    "environment": {
-    "intensity": 0.39
+    "intensity": 0.3
    },
    "subject": {
     "color": "#e8eef8",
-    "intensity": 2.2
+    "intensity": 1.5
    }
   },
   "experiment": {
    "description": "Low-key industrial: focused highlights on work surfaces, deep falloff.",
-   "background": "#0a0608",
+   "background": "#060304",
    "fog": {
-    "color": "#1b080a",
-    "density": 0.0245
+    "color": "#120406",
+    "density": 0.035
    },
    "hemi": {
     "sky": "#2a1012",
-    "ground": "#060505",
-    "intensity": 0.375
+    "ground": "#030202",
+    "intensity": 0.3
    },
    "key": {
     "color": "#ffd2b0",
@@ -215,7 +215,7 @@
    },
    "fill": {
     "color": "#3a0a10",
-    "intensity": 0.3,
+    "intensity": 0.2,
     "dir": [
      -1,
      0.2,
@@ -225,34 +225,34 @@
    "exposure": 1.0,
    "grade": {
     "tint": "#3a0006",
-    "tintOpacity": 0.072,
-    "vignette": 0.56,
+    "tintOpacity": 0.12,
+    "vignette": 0.7,
     "grain": 0.06
    },
    "post": {
     "bloom": 0.8,
-    "ao": 2.21,
+    "ao": 2.6,
     "contrast": 0.12
    },
    "environment": {
-    "intensity": 0.286
+    "intensity": 0.22
    },
    "subject": {
-    "color": "#ffe9dc",
-    "intensity": 2.4
+    "color": "#ffe2d2",
+    "intensity": 1.6
    }
   },
   "explanation": {
    "description": "Readable biological lighting: even key, controlled red/green contrast.",
-   "background": "#100608",
+   "background": "#0a0304",
    "fog": {
-    "color": "#26090d",
-    "density": 0.014
+    "color": "#1a0508",
+    "density": 0.02
    },
    "hemi": {
     "sky": "#6a2a2a",
-    "ground": "#290a0a",
-    "intensity": 0.875
+    "ground": "#1a0505",
+    "intensity": 0.7
    },
    "key": {
     "color": "#ffe0d0",
@@ -274,7 +274,7 @@
    },
    "fill": {
     "color": "#5a1a1a",
-    "intensity": 0.6,
+    "intensity": 0.4,
     "dir": [
      -1,
      0.2,
@@ -284,35 +284,35 @@
    "exposure": 1.1,
    "grade": {
     "tint": "#3a0008",
-    "tintOpacity": 0.048,
-    "vignette": 0.44,
+    "tintOpacity": 0.08,
+    "vignette": 0.55,
     "grain": 0.05
    },
    "post": {
     "bloom": 1.0,
-    "ao": 1.7,
+    "ao": 2.0,
     "contrast": 0.08,
     "saturation": 0.1
    },
    "environment": {
-    "intensity": 0.455
+    "intensity": 0.35
    },
    "subject": {
-    "color": "#ffe9dc",
-    "intensity": 2.4
+    "color": "#ffe2d2",
+    "intensity": 1.6
    }
   },
   "triumph": {
    "description": "Warm gold key, golden haze, lifted shadows.",
-   "background": "#130c06",
+   "background": "#0c0703",
    "fog": {
-    "color": "#2c1b0a",
-    "density": 0.0154
+    "color": "#1e1206",
+    "density": 0.022
    },
    "hemi": {
     "sky": "#6a4a1a",
-    "ground": "#1d0e05",
-    "intensity": 0.688
+    "ground": "#120802",
+    "intensity": 0.55
    },
    "key": {
     "color": "#ffc86b",
@@ -334,7 +334,7 @@
    },
    "fill": {
     "color": "#4a2a0a",
-    "intensity": 0.525,
+    "intensity": 0.35,
     "dir": [
      1,
      0.2,
@@ -344,36 +344,36 @@
    "exposure": 1.1,
    "grade": {
     "tint": "#5a3a00",
-    "tintOpacity": 0.084,
-    "vignette": 0.48,
+    "tintOpacity": 0.14,
+    "vignette": 0.6,
     "grain": 0.05
    },
    "post": {
     "bloom": 1.3,
-    "ao": 1.7,
+    "ao": 2.0,
     "contrast": 0.1,
     "saturation": 0.15,
-    "vignette": 0.425
+    "vignette": 0.5
    },
    "environment": {
-    "intensity": 0.455
+    "intensity": 0.35
    },
    "subject": {
-    "color": "#ffe0bc",
-    "intensity": 2.2
+    "color": "#ffdcb4",
+    "intensity": 1.4
    }
   },
   "punchline": {
    "description": "Dramatic return to deep crimson and black. High contrast, single rim.",
-   "background": "#060203",
+   "background": "#030001",
    "fog": {
-    "color": "#1b0206",
-    "density": 0.035
+    "color": "#120003",
+    "density": 0.05
    },
    "hemi": {
     "sky": "#2a0005",
-    "ground": "#020202",
-    "intensity": 0.3
+    "ground": "#000000",
+    "intensity": 0.2
    },
    "key": {
     "color": "#ff0f1f",
@@ -394,47 +394,47 @@
     ]
    },
    "fill": {
-    "color": "#2a1a1c",
-    "intensity": 0.25,
+    "color": "#000000",
+    "intensity": 0.0,
     "dir": [
      1,
      0,
      0
     ]
    },
-   "exposure": 1.0,
+   "exposure": 1.15,
    "grade": {
     "tint": "#6a0008",
-    "tintOpacity": 0.132,
-    "vignette": 0.68,
+    "tintOpacity": 0.22,
+    "vignette": 0.85,
     "grain": 0.08
    },
    "post": {
     "bloom": 1.1,
-    "ao": 2.38,
+    "ao": 2.8,
     "contrast": 0.18,
-    "vignette": 0.51,
-    "grain": 0.045
+    "vignette": 0.75,
+    "grain": 0.06
    },
    "environment": {
-    "intensity": 0.28
+    "intensity": 0.12
    },
    "subject": {
-    "color": "#ffe9dc",
-    "intensity": 1.8
+    "color": "#ffe2d2",
+    "intensity": 1.1
    }
   },
   "industrial-red": {
    "description": "Dark red industrial base lighting for corridors and halls.",
-   "background": "#0d0506",
+   "background": "#080203",
    "fog": {
-    "color": "#29080c",
-    "density": 0.0245
+    "color": "#1c0407",
+    "density": 0.035
    },
    "hemi": {
     "sky": "#3a0a0e",
-    "ground": "#0b0506",
-    "intensity": 0.562
+    "ground": "#060203",
+    "intensity": 0.45
    },
    "key": {
     "color": "#ff4a3a",
@@ -456,7 +456,7 @@
    },
    "fill": {
     "color": "#2a0508",
-    "intensity": 0.3,
+    "intensity": 0.2,
     "dir": [
      -1,
      0.2,
@@ -466,33 +466,33 @@
    "exposure": 1.0,
    "grade": {
     "tint": "#4a0008",
-    "tintOpacity": 0.084,
-    "vignette": 0.56,
+    "tintOpacity": 0.14,
+    "vignette": 0.7,
     "grain": 0.06
    },
    "post": {
     "bloom": 0.9,
-    "ao": 2.12
+    "ao": 2.5
    },
    "environment": {
-    "intensity": 0.286
+    "intensity": 0.22
    },
    "subject": {
-    "color": "#ffe9dc",
-    "intensity": 2.4
+    "color": "#ffe2d2",
+    "intensity": 1.6
    }
   },
   "crimson-rim": {
    "description": "Character-isolating crimson rim against black.",
-   "background": "#080305",
+   "background": "#040102",
    "fog": {
-    "color": "#160508",
-    "density": 0.028
+    "color": "#0e0204",
+    "density": 0.04
    },
    "hemi": {
     "sky": "#200508",
-    "ground": "#020202",
-    "intensity": 0.3
+    "ground": "#000000",
+    "intensity": 0.2
    },
    "key": {
     "color": "#ffd8c8",
@@ -513,46 +513,46 @@
     ]
    },
    "fill": {
-    "color": "#2a1a1c",
-    "intensity": 0.25,
+    "color": "#000000",
+    "intensity": 0.0,
     "dir": [
      1,
      0,
      0
     ]
    },
-   "exposure": 1.0,
+   "exposure": 1.15,
    "grade": {
     "tint": "#5a0008",
-    "tintOpacity": 0.09,
-    "vignette": 0.64,
+    "tintOpacity": 0.15,
+    "vignette": 0.8,
     "grain": 0.07
    },
    "post": {
     "bloom": 0.9,
-    "ao": 2.21,
+    "ao": 2.6,
     "contrast": 0.15,
-    "vignette": 0.51
+    "vignette": 0.7
    },
    "environment": {
-    "intensity": 0.286
+    "intensity": 0.22
    },
    "subject": {
-    "color": "#ffe9dc",
-    "intensity": 1.9
+    "color": "#ffe2d2",
+    "intensity": 1.2
    }
   },
   "low-key-lab": {
    "description": "Low-key laboratory: pools of light on benches, black surroundings.",
-   "background": "#090608",
+   "background": "#050304",
    "fog": {
-    "color": "#16090a",
-    "density": 0.028
+    "color": "#0e0506",
+    "density": 0.04
    },
    "hemi": {
     "sky": "#2a1a1a",
-    "ground": "#060505",
-    "intensity": 0.375
+    "ground": "#030202",
+    "intensity": 0.3
    },
    "key": {
     "color": "#ffe8d8",
@@ -574,7 +574,7 @@
    },
    "fill": {
     "color": "#200608",
-    "intensity": 0.25,
+    "intensity": 0.15,
     "dir": [
      1,
      0.2,
@@ -584,34 +584,34 @@
    "exposure": 1.0,
    "grade": {
     "tint": "#3a0006",
-    "tintOpacity": 0.06,
-    "vignette": 0.576,
+    "tintOpacity": 0.1,
+    "vignette": 0.72,
     "grain": 0.06
    },
    "post": {
     "bloom": 0.9,
-    "ao": 2.21,
+    "ao": 2.6,
     "contrast": 0.12
    },
    "environment": {
-    "intensity": 0.325
+    "intensity": 0.25
    },
    "subject": {
-    "color": "#ffe9dc",
-    "intensity": 2.4
+    "color": "#ffe2d2",
+    "intensity": 1.6
    }
   },
   "microscopic-green": {
    "description": "Microscopic world: toxic green subjects, red tissue, dense medium.",
-   "background": "#090d06",
+   "background": "#050803",
    "fog": {
-    "color": "#101b0a",
-    "density": 0.042
+    "color": "#0a1206",
+    "density": 0.06
    },
    "hemi": {
     "sky": "#2a4a10",
-    "ground": "#410a0a",
-    "intensity": 0.75
+    "ground": "#2a0505",
+    "intensity": 0.6
    },
    "key": {
     "color": "#c8ff6a",
@@ -633,7 +633,7 @@
    },
    "fill": {
     "color": "#1a3008",
-    "intensity": 0.525,
+    "intensity": 0.35,
     "dir": [
      1,
      0.1,
@@ -643,34 +643,34 @@
    "exposure": 1.05,
    "grade": {
     "tint": "#1a3000",
-    "tintOpacity": 0.06,
-    "vignette": 0.56,
+    "tintOpacity": 0.1,
+    "vignette": 0.7,
     "grain": 0.07
    },
    "post": {
     "bloom": 1.3,
-    "ao": 1.53,
+    "ao": 1.8,
     "saturation": 0.15
    },
    "environment": {
-    "intensity": 0.325
+    "intensity": 0.25
    },
    "subject": {
     "color": "#eaffd8",
-    "intensity": 1.8
+    "intensity": 1.2
    }
   },
   "volumetric-corridor": {
    "description": "Corridor with strong side shafts through haze.",
-   "background": "#0a0506",
+   "background": "#060203",
    "fog": {
-    "color": "#320910",
-    "density": 0.035
+    "color": "#22050a",
+    "density": 0.05
    },
    "hemi": {
     "sky": "#2a0a0e",
-    "ground": "#0a0405",
-    "intensity": 0.375
+    "ground": "#050102",
+    "intensity": 0.3
    },
    "key": {
     "color": "#ff3a30",
@@ -692,7 +692,7 @@
    },
    "fill": {
     "color": "#120204",
-    "intensity": 0.25,
+    "intensity": 0.1,
     "dir": [
      -1,
      0.1,
@@ -702,33 +702,33 @@
    "exposure": 1.0,
    "grade": {
     "tint": "#4a0008",
-    "tintOpacity": 0.096,
-    "vignette": 0.6,
+    "tintOpacity": 0.16,
+    "vignette": 0.75,
     "grain": 0.07
    },
    "post": {
     "bloom": 1.1,
-    "ao": 2.04
+    "ao": 2.4
    },
    "environment": {
-    "intensity": 0.286
+    "intensity": 0.22
    },
    "subject": {
-    "color": "#ffe9dc",
-    "intensity": 2.4
+    "color": "#ffe2d2",
+    "intensity": 1.6
    }
   },
   "golden-award": {
    "description": "Golden award reveal: top spot, gold bounce, black surround.",
-   "background": "#0a0805",
+   "background": "#060402",
    "fog": {
-    "color": "#1e1308",
-    "density": 0.021
+    "color": "#140c04",
+    "density": 0.03
    },
    "hemi": {
     "sky": "#4a3210",
-    "ground": "#110b05",
-    "intensity": 0.5
+    "ground": "#0a0602",
+    "intensity": 0.4
    },
    "key": {
     "color": "#ffc060",
@@ -750,7 +750,7 @@
    },
    "fill": {
     "color": "#3a2408",
-    "intensity": 0.45,
+    "intensity": 0.3,
     "dir": [
      1,
      0.1,
@@ -760,34 +760,34 @@
    "exposure": 1.1,
    "grade": {
     "tint": "#5a3a00",
-    "tintOpacity": 0.09,
-    "vignette": 0.56,
+    "tintOpacity": 0.15,
+    "vignette": 0.7,
     "grain": 0.05
    },
    "post": {
     "bloom": 1.3,
-    "ao": 1.7,
+    "ao": 2.0,
     "saturation": 0.12
    },
    "environment": {
-    "intensity": 0.455
+    "intensity": 0.35
    },
    "subject": {
-    "color": "#ffe0bc",
-    "intensity": 2.2
+    "color": "#ffdcb4",
+    "intensity": 1.4
    }
   },
   "high-contrast-character": {
    "description": "Hard single-source key from 3/4 high side + red rim. Portrait / orbit shots.",
-   "background": "#060305",
+   "background": "#030102",
    "fog": {
-    "color": "#100508",
-    "density": 0.021
+    "color": "#0a0204",
+    "density": 0.03
    },
    "hemi": {
     "sky": "#1a0a0a",
-    "ground": "#020202",
-    "intensity": 0.3
+    "ground": "#000000",
+    "intensity": 0.18
    },
    "key": {
     "color": "#ffe6d6",
@@ -808,33 +808,33 @@
     ]
    },
    "fill": {
-    "color": "#2a1a1c",
-    "intensity": 0.25,
+    "color": "#000000",
+    "intensity": 0.0,
     "dir": [
      -1,
      0,
      0
     ]
    },
-   "exposure": 1.0,
+   "exposure": 1.15,
    "grade": {
     "tint": "#4a0006",
-    "tintOpacity": 0.072,
-    "vignette": 0.64,
+    "tintOpacity": 0.12,
+    "vignette": 0.8,
     "grain": 0.07
    },
    "post": {
     "bloom": 0.8,
-    "ao": 2.21,
+    "ao": 2.6,
     "contrast": 0.16,
-    "vignette": 0.51
+    "vignette": 0.7
    },
    "environment": {
-    "intensity": 0.286
+    "intensity": 0.22
    },
    "subject": {
-    "color": "#ffe9dc",
-    "intensity": 2.0
+    "color": "#ffe2d2",
+    "intensity": 1.3
    }
   }
  }

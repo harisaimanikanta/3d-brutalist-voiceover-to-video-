@@ -53,8 +53,10 @@ Each preset carries `exposure` and a `grade {tint, tintOpacity, vignette, grain}
 (v3; before that it was silently ignored by the ACES pass). `PostFX.lift` (default 0.012) keeps shadow detail
 so dark sets read as dark, not as black voids.
 
-**Exposure target:** mean luma 55–140 on every proof-of-concept still (the stills step prints it and flags
-< 45 as TOO DARK). Moody ≠ black: a dark frame still shows the set's shapes and a clearly lit subject.
+**Exposure target:** mean luma 40–130 on every proof-of-concept still (the stills step prints it and flags
+< 38 as TOO DARK, > 140 as washed out). The look stays dark red brutalism: keep the authored preset colours and
+fix darkness locally (subject light, practicals, a per-shot exposure nudge), never by lifting the whole palette
+toward grey/pink. Moody ≠ black: a dark frame still shows the set's shapes and a clearly lit subject.
 If a still is too dark: 1) check the subject light reaches the subject (camera `target` on the subject),
 2) add practicals/spot pools, 3) raise `exposure` / `hemi` in a `shot.lighting` override. Never flatten with
 a big ambient light.
@@ -62,13 +64,13 @@ a big ambient light.
 ## Subject light (v3) — the frame must have a focus
 
 `LightingDirector` takes `cameraPosition` and mounts a soft, neutral, camera-relative spot aimed at the camera's
-look target (`preset.subject {color, intensity, angle?, side?}`; defaults #ffe9dc, 2.2). It sits between camera
+look target (`preset.subject {color, intensity, angle?, side?}`; defaults #ffe2d2, 1.6; moody presets 1.1–1.3). It sits between camera
 and subject, lifted and offset to one side (3/4 modelling, not flat flash), with no distance falloff, so the
 subject is always the best-lit, true-coloured thing in frame even inside an all-red set. This is the main fix
 for "red-on-red, nothing to look at" frames. Consequences:
 - Always aim the camera `target` at what the beat is about (a face, a hand, the object), not at empty space.
 - `SubjectRig` now adds on top of it: use key 25–40, rim 40–65 (v2 used 40–70 and blew out white hair and
-  shirts). Lower `subject.intensity` (1.5–1.9) for punchline/mystery silhouettes; 0 disables it for a shot.
+  shirts). Keep it a soft accent: above ~2 it starts flattening the red mood. 0 disables it for a shot.
 
 ## v2 lighting system (what actually renders)
 

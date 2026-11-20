@@ -28,8 +28,12 @@ export interface Opening { wall: Wall; offset?: number; width: number; height: n
  * Room shell: floor, 4 walls with openings (doors/windows), skirting, optional tiled dado, cornice,
  * ceiling with downstand beams. Origin = floor centre. Walls are 0.25 m thick, inner faces at ±w/2, ±d/2.
  */
-export function RoomShell({ size = [10, 3.4, 8] as V3, wall = 'plaster-wall' as MaterialPresetId, dado = null as MaterialPresetId | null, dadoHeight = 1.3, floor = 'linoleum' as MaterialPresetId, ceiling = 'concrete-light' as MaterialPresetId, beams = 3, openings = [] as Opening[], skipWalls = [] as Wall[], ceilingOn = true }: {
+export function RoomShell({ size = [10, 3.4, 8] as V3, wall = 'plaster-wall' as MaterialPresetId, dado = null as MaterialPresetId | null, dadoHeight = 1.3, floor = 'linoleum' as MaterialPresetId, ceiling = 'concrete-light' as MaterialPresetId, beams = 3, openings = [] as Opening[], skipWalls = [] as Wall[], ceilingOn = true, structure = true, ductWall }: {
   size?: V3; wall?: MaterialPresetId; dado?: MaterialPresetId | null; dadoHeight?: number; floor?: MaterialPresetId; ceiling?: MaterialPresetId; beams?: number; openings?: Opening[]; skipWalls?: Wall[]; ceilingOn?: boolean;
+  /** v3 brutalist structure layer (board-form grooves, tie holes, ledge, corbels, coffers, duct). Default on. */
+  structure?: boolean;
+  /** wall that carries the service duct + cable tray (default: first of e, w, n, s not skipped) */
+  ductWall?: Wall;
 }) {
   const [w, h, d] = size;
   const T = 0.25;
@@ -69,10 +73,115 @@ export function RoomShell({ size = [10, 3.4, 8] as V3, wall = 'plaster-wall' as 
   (['n', 's', 'e', 'w'] as Wall[]).forEach(addWall);
   return (
     <group>
+      {structure && <BrutalistStructure size={size} wall={wall} dado={dado} dadoHeight={dadoHeight} ceiling={ceiling} beams={beams} openings={openings} skipWalls={skipWalls} ceilingOn={ceilingOn} ductWall={ductWall} />}
       <mesh geometry={bevelBox(w + 0.5, 0.2, d + 0.5, 0.01, 2, 1.2)} material={getMaterial(floor)} position={[0, -0.1, 0]} receiveShadow />
       {parts}
       {ceilingOn && <mesh geometry={bevelBox(w + 0.5, 0.25, d + 0.5, 0.01, 2, 3)} material={getMaterial(ceiling)} position={[0, h + 0.125, 0]} receiveShadow />}
       {ceilingOn && Array.from({ length: beams }, (_, i) => <mesh key={`b${i}`} geometry={bevelBox(w, 0.35, 0.3, 0.02)} material={getMaterial(ceiling)} position={[0, h - 0.17, -d / 2 + ((i + 1) * d) / (beams + 1)]} castShadow receiveShadow />)}
+    </group>
+  );
+}
+
+/**
+ * v3 brutalist structure layer for RoomShell. Adds the cast-concrete detail that makes a room read as brutalist
+ * and gives every background real depth: board-formed shutter grooves + formwork tie holes on concrete/plaster
+ * walls, a cast ledge band below the ceiling, beam corbels, a coffered ceiling grid and a service duct with a
+ * cable tray. Everything lives above the dado / in the upper wall zone or is flush with the wall (≤ 2 cm), so it
+ * never collides with furniture placed against the walls. All repeats are instanced.
+ */
+function BrutalistStructure({ size, wall, dado, dadoHeight, ceiling, beams, openings, skipWalls, ceilingOn, ductWall }: {
+  size: V3; wall: MaterialPresetId; dado: MaterialPresetId | null; dadoHeight: number; ceiling: MaterialPresetId; beams: number; openings: Opening[]; skipWalls: Wall[]; ceilingOn: boolean; ductWall?: Wall;
+}) {
+  const [w, h, d] = size;
+  const data = useMemo(() => {
+    const walls = (['n', 's', 'e', 'w'] as Wall[]).filter((sd) => !skipWalls.includes(sd));
+    const formed = /^(concrete|plaster)/.test(wall);
+    const grooves: { p: V3; s: V3; r: V3 }[] = [];
+    const ties: { p: V3; r?: V3 }[] = [];
+    const ledges: { p: V3; s: V3; r: V3 }[] = [];
+    const corbels: { p: V3; s: V3 }[] = [];
+    const yLo = Math.max(dado ? dadoHeight + 0.08 : 0.2, 0.2);
+    const yLedge = h - 0.55;
+    // place a point along a wall: a = along-wall coord, y, k = distance off the inner face
+    const at = (sd: Wall, a: number, y: number, k: number): V3 => {
+      if (sd === 'n') return [a, y, -d / 2 + k];
+      if (sd === 's') return [a, y, d / 2 - k];
+      if (sd === 'e') return [w / 2 - k, y, a];
+      return [-w / 2 + k, y, a];
+    };
+    const horiz = (sd: Wall) => sd === 'n' || sd === 's';
+    // free intervals along a wall at height y (openings cut them)
+    const free = (sd: Wall, y: number, pad = 0.08): [number, number][] => {
+      const len = horiz(sd) ? w : d;
+      let iv: [number, number][] = [[-len / 2 + 0.05, len / 2 - 0.05]];
+      for (const o of openings.filter((o) => o.wall === sd)) {
+        const y0 = o.sill ?? 0, y1 = y0 + o.height;
+        if (y < y0 - pad || y > y1 + pad) continue;
+        const a0 = (o.offset ?? 0) - o.width / 2 - pad, a1 = (o.offset ?? 0) + o.width / 2 + pad;
+        iv = iv.flatMap(([s0, s1]) => (a1 <= s0 || a0 >= s1 ? [[s0, s1]] : [[s0, Math.min(s1, a0)], [Math.max(s0, a1), s1]]).filter(([x0, x1]) => x1 - x0 > 0.05) as [number, number][]);
+      }
+      return iv;
+    };
+    for (const sd of walls) {
+      const H_ = horiz(sd);
+      if (formed) {
+        // horizontal shutter-board joints every 0.3 m
+        for (let y = yLo; y < yLedge - 0.1; y += 0.3) for (const [a0, a1] of free(sd, y, 0.02)) {
+          const len = a1 - a0;
+          grooves.push({ p: at(sd, (a0 + a1) / 2, y, 0.004), s: [len, 1, 1], r: H_ ? [0, 0, 0] : [0, Math.PI / 2, 0] });
+        }
+        // tie holes on a 0.6 × 0.6 grid between joints
+        const len = H_ ? w : d;
+        for (let y = yLo + 0.15; y < yLedge - 0.2; y += 0.6) for (let a = -len / 2 + 0.3; a < len / 2 - 0.2; a += 0.6) {
+          if (!free(sd, y, 0.06).some(([a0, a1]) => a > a0 && a < a1)) continue;
+          ties.push({ p: at(sd, a, y, 0.006), r: H_ ? [Math.PI / 2, 0, 0] : [0, 0, Math.PI / 2] });
+        }
+      }
+      // cast ledge band under the ceiling
+      for (const [a0, a1] of free(sd, yLedge, 0.05)) {
+        const len = a1 - a0;
+        ledges.push({ p: at(sd, (a0 + a1) / 2, yLedge, 0.06), s: [len, 1, 1], r: H_ ? [0, 0, 0] : [0, Math.PI / 2, 0] });
+      }
+    }
+    // corbels where the ceiling beams (they run along X) land on the e/w walls
+    if (ceilingOn) for (let i = 0; i < beams; i++) {
+      const z = -d / 2 + ((i + 1) * d) / (beams + 1);
+      for (const sd of (['e', 'w'] as Wall[]).filter((x) => walls.includes(x))) {
+        if (!free(sd, h - 0.6, 0.1).some(([a0, a1]) => z > a0 + 0.25 && z < a1 - 0.25)) continue;
+        corbels.push({ p: at(sd, z, h - 0.75, 0.14), s: [1, 1, 1] });
+      }
+    }
+    // coffers: secondary beams along Z between the primary beams
+    const nX = Math.max(1, Math.round(w / 2.4) - 1);
+    const coffers: V3[] = ceilingOn ? Array.from({ length: nX }, (_, i) => [-w / 2 + ((i + 1) * w) / (nX + 1), h - 0.12, 0] as V3) : [];
+    const duct = ductWall && walls.includes(ductWall) ? ductWall : (['e', 'w', 'n', 's'] as Wall[]).find((x) => walls.includes(x));
+    return { grooves, ties, ledges, corbels, coffers, duct, yLedge, at, horiz };
+  }, [w, h, d, wall, dado, dadoHeight, beams, openings, skipWalls, ceilingOn, ductWall]);
+
+  const grooveMat = getMaterial('concrete-dark', { color: '#5a5654' });
+  const holeMat = getMaterial('matte-black');
+  const ledgeMat = getMaterial(/^concrete/.test(wall) ? wall : 'concrete-rough');
+  const { duct } = data;
+  const ductLen = duct ? (data.horiz(duct) ? w : d) - 0.6 : 0;
+  const ductY = h - 0.32;
+  const ductRot: V3 = duct && !data.horiz(duct) ? [0, Math.PI / 2, 0] : [0, 0, 0];
+  return (
+    <group>
+      {data.grooves.length > 0 && <Instances geometry={cached('bs-groove', () => new THREE.BoxGeometry(1, 0.014, 0.012))} material={grooveMat} castShadow={false} receiveShadow transforms={data.grooves} />}
+      {data.ties.length > 0 && <Instances geometry={cached('bs-tie', () => new THREE.CylinderGeometry(0.016, 0.016, 0.012, 10))} material={holeMat} castShadow={false} receiveShadow={false} transforms={data.ties.map((t) => ({ p: t.p, r: t.r }))} />}
+      {data.ledges.length > 0 && <Instances geometry={bevelBox(1, 0.2, 0.12, 0.02)} material={ledgeMat} transforms={data.ledges} />}
+      {data.corbels.length > 0 && <Instances geometry={bevelBox(0.28, 0.6, 0.45, 0.03)} material={getMaterial(ceiling)} transforms={data.corbels.map((c) => ({ p: c.p }))} />}
+      {data.coffers.length > 0 && <Instances geometry={bevelBox(0.22, 0.24, d, 0.02)} material={getMaterial(ceiling)} castShadow={false} transforms={data.coffers.map((p) => ({ p }))} />}
+      {duct && (
+        <group position={data.at(duct, 0, ductY, 0.42)} rotation={ductRot}>
+          <mesh geometry={bevelBox(ductLen, 0.34, 0.5, 0.02)} material={getMaterial('metal-brushed')} castShadow receiveShadow />
+          <Instances geometry={bevelBox(0.05, 0.4, 0.56, 0.01)} material={getMaterial('metal-dark')} castShadow={false} transforms={Array.from({ length: Math.max(2, Math.floor(ductLen / 1.2)) }, (_, i) => ({ p: [-ductLen / 2 + 0.3 + i * 1.2, 0, 0] as V3 }))} />
+          {/* hangers + cable tray with cables below the duct */}
+          <Instances geometry={bevelBox(0.03, 0.5, 0.03, 0.005)} material={getMaterial('metal-dark')} castShadow={false} transforms={Array.from({ length: Math.max(2, Math.floor(ductLen / 1.8)) }, (_, i) => ({ p: [-ductLen / 2 + 0.5 + i * 1.8, -0.3, 0.2] as V3 }))} />
+          <mesh geometry={bevelBox(ductLen, 0.05, 0.3, 0.008)} material={getMaterial('metal-painted')} position={[0, -0.42, 0.08]} />
+          {[-0.08, 0, 0.08].map((dz, i) => <mesh key={i} geometry={cached(`bs-cable-${Math.round(ductLen * 10)}`, () => new THREE.CylinderGeometry(0.018, 0.018, ductLen, 8).rotateZ(Math.PI / 2))} material={getMaterial(i === 1 ? 'red-dark' : 'rubber-black')} position={[0, -0.375, 0.08 + dz]} />)}
+        </group>
+      )}
     </group>
   );
 }
@@ -288,6 +397,17 @@ export function InstituteExterior({ position, rotation, frame, sign = ['PERTH', 
       )}
       {/* distant brutalist towers */}
       <Instances geometry={bevelBoxBase(10, 1, 10, 0.1)} material={getMaterial('concrete-dark')} transforms={[[-60, 34, -90], [-30, 48, -110], [40, 40, -100], [70, 30, -80], [5, 55, -140]].map(([x, h, z]) => ({ p: [x, 0, z] as V3, s: [1, h, 1] as V3 }))} castShadow={false} />
+      {/* v3 street furniture: concrete bollards, lamp posts with practical heads, benches, pilotis */}
+      <Instances geometry={bevelBoxBase(0.35, 0.9, 0.35, 0.05)} material={getMaterial('concrete-rough')} transforms={[-13, -11, -9, -7, -5, 5, 7, 9, 11, 13].map((x) => ({ p: [x, 0, -14.2] as V3 }))} />
+      {[-15, -4.5, 4.5, 15].map((x) => (
+        <group key={`lamp${x}`} position={[x, 0, -4]}>
+          <mesh geometry={cylinderBase(0.08, 0.11, 5.2, 10)} material={getMaterial('metal-dark')} castShadow />
+          <mesh geometry={bevelBox(0.9, 0.16, 0.32, 0.03)} material={getMaterial('metal-dark')} position={[0.3, 5.2, 0]} />
+          <mesh geometry={bevelBox(0.7, 0.04, 0.22, 0.01)} material={getMaterial('emissive-gold', { emissive: '#ff9a6a', emissiveIntensity: 2.4 })} position={[0.3, 5.1, 0]} />
+        </group>
+      ))}
+      {[-10, 10].map((x) => [0, 1].map((k) => <mesh key={`bench${x}${k}`} geometry={bevelBoxBase(2.6, 0.45, 0.6, 0.04)} material={getMaterial('concrete-light')} position={[x, 0, -1 + k * 5]} castShadow receiveShadow />))}
+      <Instances geometry={bevelBoxBase(0.9, 3.2, 0.9, 0.04)} material={getMaterial('concrete-rough')} transforms={[-14, -10, 10, 14].map((x) => ({ p: [x, 0, -19.4] as V3 }))} />
       {/* planters with clipped trees */}
       {[-12, 12].map((x) => (
         <group key={x} position={[x, 0, -8]}>
@@ -333,6 +453,18 @@ import { Newspaper as NewspaperImpl } from '../objects/Props80s';
 
 /** Final horizon: monumental brutalist slabs against a huge low red sun, sky dome, ground haze.
  *  Place a silhouetted Figure at 'standpoint'. Sun sits on the -Z horizon. */
+const horizonRubble = (() => {
+  const r = rng(57);
+  const out: { p: V3; r: V3; s: V3 }[] = [];
+  for (let i = 0; i < 46; i++) {
+    const side = i % 2 ? 1 : -1;
+    const x = side * (3.8 + r() * 16), z = -12 - r() * 60;
+    const big = r() < 0.25;
+    out.push({ p: [x, big ? -0.2 : -0.05, z], r: [r() * 0.3 - 0.15, r() * Math.PI, r() * 0.3 - 0.15], s: big ? [2 + r() * 3, 1.2 + r() * 2.5, 1.5 + r() * 2] : [0.4 + r() * 1.1, 0.3 + r() * 0.8, 0.4 + r() * 1] });
+  }
+  return out;
+})();
+
 export function RedSunHorizon({ position, rotation, frame }: { position?: V3; rotation?: V3; frame?: number }) {
   const skyMat = useMemo(() => new THREE.MeshBasicMaterial({ map: skyGradientTexture('#020001', '#2a0306', '#e0141e'), side: THREE.BackSide, fog: false }), []);
   // slabs frame the sun: none within ±12 m of the centre line so the disc stays visible behind a silhouette
@@ -344,10 +476,16 @@ export function RedSunHorizon({ position, rotation, frame }: { position?: V3; ro
       <mesh geometry={bevelBox(160, 0.4, 160, 0.02, 2, 4)} material={getMaterial('concrete-dark')} position={[0, -0.2, -40]} receiveShadow />
       {slabs.map((sl, i) => <mesh key={i} geometry={bevelBoxBase(sl.w, sl.h, 3, 0.08)} material={getMaterial('concrete-dark')} position={[sl.x, 0, sl.z]} castShadow receiveShadow />)}
       <mesh geometry={bevelBoxBase(6, 2.4, 6, 0.06)} material={getMaterial('concrete-rough')} position={[0, 0, -8]} castShadow receiveShadow />
+      {/* v3: receding colonnade + gateway beam frame the sun; rubble and fallen blocks give mid/foreground depth */}
+      {/* colonnade sits outside the sun's ±12 m corridor (like the slabs) so the disc stays visible */}
+      {[-1, 1].map((sd) => <PillarRow key={sd} count={8} spacing={7} height={18} width={1.6} position={[sd * 15, 0, -66]} material="concrete-dark" />)}
+      <mesh geometry={bevelBox(33, 2.4, 2.6, 0.06)} material={getMaterial('concrete-dark')} position={[0, 19.2, -66]} castShadow />
+      <Instances geometry={bevelBoxBase(1, 1, 1, 0.06)} material={getMaterial('concrete-rough')} transforms={horizonRubble} />
+      <SlotLight length={60} position={[0, 0.03, -36]} rotation={[0, Math.PI / 2, 0]} light={false} />
       <Staircase steps={10} rise={0.24} run={0.5} width={3} position={[0, 0, -2]} walls={false} />
       <HazeVolume size={[120, 120]} layers={4} height={8} color="#7a0a12" opacity={0.04} position={[0, 0, -40]} />
       <DustMotes bounds={[30, 12, 30]} position={[0, 0, -10]} color="#ff5a3a" count={400} frame={frame} />
     </group>
   );
 }
-import { Staircase } from '../architecture/Structural';
+import { Staircase, PillarRow, SlotLight } from '../architecture/Structural';

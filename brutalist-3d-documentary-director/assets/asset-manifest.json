@@ -2496,18 +2496,23 @@
     "lighting",
     "presets"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "required": true,
    "dependencies": [],
    "files": [
     "lighting/lighting-presets.json"
    ],
-   "sha256": "0d76b402a7059705647ffad648da9df62c6cda0bfae650802376aa8fab01da70",
+   "sha256": "3f7dda826a9a102e96befeddb491a12a441fd09f9eb3e9bea2293eaa6e069756",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ]
   },
@@ -3057,7 +3062,7 @@
   {
    "materials": [],
    "dependencies": [],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "history": [
     {
      "version": "1.0.0",
@@ -3068,6 +3073,11 @@
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: exposure really applied before tone mapping, shadow lift, HDR bloom threshold 1.2, lighter vignette/grain"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: defaults restored to the moody grade; HDR bloom threshold and exposure fix kept"
     }
    ],
    "id": "render.postfx",
@@ -3094,7 +3104,7 @@
    "files": [
     "rendering/PostFX.tsx"
    ],
-   "sha256": "dc79c62af5689ef3655e1e93f83d306cc913a07d21135a81258ee9dca9e65c93"
+   "sha256": "d85ab6894049e6aafdf2853347bcbed5f11d88e8474eb2d798af338158378f9f"
   },
   {
    "materials": [],
@@ -4224,13 +4234,18 @@
     "interior",
     "builder"
    ],
-   "version": "1.0.0",
+   "version": "1.1.0",
    "quality": "hero",
    "history": [
     {
      "version": "1.0.0",
      "date": "2026-11-19",
      "note": "visual upgrade v2"
+    },
+    {
+     "version": "1.1.0",
+     "date": "2026-11-20",
+     "note": "v3: RoomShell brutalist structure layer (shutter joints, tie holes, ledge, corbels, coffers, duct); denser RedSunHorizon (colonnade, gateway beam, rubble, floor slot light) and InstituteExterior (bollards, lamp posts, benches, pilotis)"
     }
    ],
    "files": [
@@ -4253,7 +4268,7 @@
     "props/Medical.tsx",
     "textures/canvasTextures.ts"
    ],
-   "sha256": "aea0f6b297bfbbbf32fe4441ab87fee80c59dde499e82b0aab26e437fa1868bb"
+   "sha256": "bccd1d4719cb52930e54763de2c19151f41720ceb3365a53100a830d4a566ef3"
   },
   {
    "id": "env.pathology-lab",
@@ -4294,13 +4309,18 @@
     "microscope",
     "1980s"
    ],
-   "version": "1.0.0",
+   "version": "1.1.0",
    "quality": "hero",
    "history": [
     {
      "version": "1.0.0",
      "date": "2026-11-19",
      "note": "visual upgrade v2"
+    },
+    {
+     "version": "1.1.0",
+     "date": "2026-11-20",
+     "note": "v3: RoomShell brutalist structure layer (shutter joints, tie holes, ledge, corbels, coffers, duct); denser RedSunHorizon (colonnade, gateway beam, rubble, floor slot light) and InstituteExterior (bollards, lamp posts, benches, pilotis)"
     }
    ],
    "files": [
@@ -4323,7 +4343,7 @@
     "props/Medical.tsx",
     "textures/canvasTextures.ts"
    ],
-   "sha256": "aea0f6b297bfbbbf32fe4441ab87fee80c59dde499e82b0aab26e437fa1868bb"
+   "sha256": "bccd1d4719cb52930e54763de2c19151f41720ceb3365a53100a830d4a566ef3"
   },
   {
    "id": "env.lecture-theatre",
@@ -4365,13 +4385,18 @@
     "rejection",
     "presentation"
    ],
-   "version": "1.0.0",
+   "version": "1.1.0",
    "quality": "hero",
    "history": [
     {
      "version": "1.0.0",
      "date": "2026-11-19",
      "note": "visual upgrade v2"
+    },
+    {
+     "version": "1.1.0",
+     "date": "2026-11-20",
+     "note": "v3: RoomShell brutalist structure layer (shutter joints, tie holes, ledge, corbels, coffers, duct); denser RedSunHorizon (colonnade, gateway beam, rubble, floor slot light) and InstituteExterior (bollards, lamp posts, benches, pilotis)"
     }
    ],
    "files": [
@@ -4394,7 +4419,7 @@
     "props/Medical.tsx",
     "textures/canvasTextures.ts"
    ],
-   "sha256": "aea0f6b297bfbbbf32fe4441ab87fee80c59dde499e82b0aab26e437fa1868bb"
+   "sha256": "bccd1d4719cb52930e54763de2c19151f41720ceb3365a53100a830d4a566ef3"
   },
   {
    "id": "env.endoscopy-room",
@@ -4435,13 +4460,18 @@
     "patient",
     "medical"
    ],
-   "version": "1.0.0",
+   "version": "1.1.0",
    "quality": "hero",
    "history": [
     {
      "version": "1.0.0",
      "date": "2026-11-19",
      "note": "visual upgrade v2"
+    },
+    {
+     "version": "1.1.0",
+     "date": "2026-11-20",
+     "note": "v3: RoomShell brutalist structure layer (shutter joints, tie holes, ledge, corbels, coffers, duct); denser RedSunHorizon (colonnade, gateway beam, rubble, floor slot light) and InstituteExterior (bollards, lamp posts, benches, pilotis)"
     }
    ],
    "files": [
@@ -4464,7 +4494,7 @@
     "props/Medical.tsx",
     "textures/canvasTextures.ts"
    ],
-   "sha256": "aea0f6b297bfbbbf32fe4441ab87fee80c59dde499e82b0aab26e437fa1868bb"
+   "sha256": "bccd1d4719cb52930e54763de2c19151f41720ceb3365a53100a830d4a566ef3"
   },
   {
    "id": "env.animal-lab",
@@ -4505,13 +4535,18 @@
     "farm",
     "research"
    ],
-   "version": "1.0.0",
+   "version": "1.1.0",
    "quality": "hero",
    "history": [
     {
      "version": "1.0.0",
      "date": "2026-11-19",
      "note": "visual upgrade v2"
+    },
+    {
+     "version": "1.1.0",
+     "date": "2026-11-20",
+     "note": "v3: RoomShell brutalist structure layer (shutter joints, tie holes, ledge, corbels, coffers, duct); denser RedSunHorizon (colonnade, gateway beam, rubble, floor slot light) and InstituteExterior (bollards, lamp posts, benches, pilotis)"
     }
    ],
    "files": [
@@ -4534,7 +4569,7 @@
     "props/Medical.tsx",
     "textures/canvasTextures.ts"
    ],
-   "sha256": "aea0f6b297bfbbbf32fe4441ab87fee80c59dde499e82b0aab26e437fa1868bb"
+   "sha256": "bccd1d4719cb52930e54763de2c19151f41720ceb3365a53100a830d4a566ef3"
   },
   {
    "id": "env.ceremony-stage",
@@ -4576,13 +4611,18 @@
     "stage",
     "triumph"
    ],
-   "version": "1.0.0",
+   "version": "1.1.0",
    "quality": "hero",
    "history": [
     {
      "version": "1.0.0",
      "date": "2026-11-19",
      "note": "visual upgrade v2"
+    },
+    {
+     "version": "1.1.0",
+     "date": "2026-11-20",
+     "note": "v3: RoomShell brutalist structure layer (shutter joints, tie holes, ledge, corbels, coffers, duct); denser RedSunHorizon (colonnade, gateway beam, rubble, floor slot light) and InstituteExterior (bollards, lamp posts, benches, pilotis)"
     }
    ],
    "files": [
@@ -4605,7 +4645,7 @@
     "props/Medical.tsx",
     "textures/canvasTextures.ts"
    ],
-   "sha256": "aea0f6b297bfbbbf32fe4441ab87fee80c59dde499e82b0aab26e437fa1868bb"
+   "sha256": "bccd1d4719cb52930e54763de2c19151f41720ceb3365a53100a830d4a566ef3"
   },
   {
    "id": "env.institute-exterior",
@@ -4649,13 +4689,18 @@
     "flag",
     "perth"
    ],
-   "version": "1.0.0",
+   "version": "1.1.0",
    "quality": "hero",
    "history": [
     {
      "version": "1.0.0",
      "date": "2026-11-19",
      "note": "visual upgrade v2"
+    },
+    {
+     "version": "1.1.0",
+     "date": "2026-11-20",
+     "note": "v3: RoomShell brutalist structure layer (shutter joints, tie holes, ledge, corbels, coffers, duct); denser RedSunHorizon (colonnade, gateway beam, rubble, floor slot light) and InstituteExterior (bollards, lamp posts, benches, pilotis)"
     }
    ],
    "files": [
@@ -4678,7 +4723,7 @@
     "props/Medical.tsx",
     "textures/canvasTextures.ts"
    ],
-   "sha256": "aea0f6b297bfbbbf32fe4441ab87fee80c59dde499e82b0aab26e437fa1868bb"
+   "sha256": "bccd1d4719cb52930e54763de2c19151f41720ceb3365a53100a830d4a566ef3"
   },
   {
    "id": "light.fixtures-v2",
@@ -4827,7 +4872,7 @@
     "office",
     "headline"
    ],
-   "version": "1.0.0",
+   "version": "1.1.0",
    "quality": "hero",
    "files": [
     "architecture/Structural.tsx",
@@ -4849,7 +4894,14 @@
     "props/Medical.tsx",
     "textures/canvasTextures.ts"
    ],
-   "sha256": "aea0f6b297bfbbbf32fe4441ab87fee80c59dde499e82b0aab26e437fa1868bb"
+   "sha256": "bccd1d4719cb52930e54763de2c19151f41720ceb3365a53100a830d4a566ef3",
+   "history": [
+    {
+     "version": "1.1.0",
+     "date": "2026-11-20",
+     "note": "v3: RoomShell brutalist structure layer (shutter joints, tie holes, ledge, corbels, coffers, duct); denser RedSunHorizon (colonnade, gateway beam, rubble, floor slot light) and InstituteExterior (bollards, lamp posts, benches, pilotis)"
+    }
+   ]
   },
   {
    "id": "env.red-sun-horizon",
@@ -4891,7 +4943,7 @@
     "monument",
     "ending"
    ],
-   "version": "1.0.0",
+   "version": "1.1.0",
    "quality": "hero",
    "files": [
     "architecture/Structural.tsx",
@@ -4913,7 +4965,14 @@
     "props/Medical.tsx",
     "textures/canvasTextures.ts"
    ],
-   "sha256": "aea0f6b297bfbbbf32fe4441ab87fee80c59dde499e82b0aab26e437fa1868bb"
+   "sha256": "bccd1d4719cb52930e54763de2c19151f41720ceb3365a53100a830d4a566ef3",
+   "history": [
+    {
+     "version": "1.1.0",
+     "date": "2026-11-20",
+     "note": "v3: RoomShell brutalist structure layer (shutter joints, tie holes, ledge, corbels, coffers, duct); denser RedSunHorizon (colonnade, gateway beam, rubble, floor slot light) and InstituteExterior (bollards, lamp posts, benches, pilotis)"
+    }
+   ]
   },
   {
    "id": "mat.concrete-rough",
@@ -7073,13 +7132,18 @@
     "mood",
     "mystery"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "mystery",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7102,13 +7166,18 @@
     "mood",
     "discovery"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "discovery",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7131,13 +7200,18 @@
     "mood",
     "rejection"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "rejection",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7160,13 +7234,18 @@
     "mood",
     "experiment"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "experiment",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7189,13 +7268,18 @@
     "mood",
     "explanation"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "explanation",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7218,13 +7302,18 @@
     "mood",
     "triumph"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "triumph",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7247,13 +7336,18 @@
     "mood",
     "punchline"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "punchline",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7277,13 +7371,18 @@
     "industrial",
     "red"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "industrial-red",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7307,13 +7406,18 @@
     "crimson",
     "rim"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "crimson-rim",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7338,13 +7442,18 @@
     "key",
     "lab"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "low-key-lab",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7368,13 +7477,18 @@
     "microscopic",
     "green"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "microscopic-green",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7398,13 +7512,18 @@
     "volumetric",
     "corridor"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "volumetric-corridor",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7428,13 +7547,18 @@
     "golden",
     "award"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "golden-award",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
@@ -7459,13 +7583,18 @@
     "contrast",
     "character"
    ],
-   "version": "1.1.0",
+   "version": "1.2.0",
    "preset": "high-contrast-character",
    "history": [
     {
      "version": "1.1.0",
      "date": "2026-11-20",
      "note": "v3: presets recalibrated for readable dark frames; each carries `subject`"
+    },
+    {
+     "version": "1.2.0",
+     "date": "2026-11-20",
+     "note": "v3.1: back to the authored dark red palette; only `subject` added (+15% exposure on the darkest moods)"
     }
    ],
    "dependencies": [
