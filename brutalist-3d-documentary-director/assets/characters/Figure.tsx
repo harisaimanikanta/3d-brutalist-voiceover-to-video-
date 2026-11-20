@@ -127,14 +127,14 @@ function hairGeometry(style: string) {
     return g;
   });
   switch (style) {
-    case 'side-part': return [shell(1.55, 0.62, 1.07, 0.16)];
-    case 'swept': return [shell(1.5, 0.7, 1.07, 0.1)];
-    case 'cropped': return [shell(1.5, 0.6, 1.035, 0)];
-    case 'receding': return [shell(1.25, 1.05, 1.05, 0)];
+    case 'side-part': return [shell(1.5, 0.62, 1.045, 0.14)];
+    case 'swept': return [shell(1.47, 0.7, 1.045, 0.09)];
+    case 'cropped': return [shell(1.47, 0.6, 1.025, 0)];
+    case 'receding': return [shell(1.22, 1.05, 1.03, 0)];
     case 'long': return [shell(1.65, 0.45, 1.08, 0.08)];
     case 'bun': return [shell(1.55, 0.55, 1.06, 0.04)];
     case 'bald': return [];
-    default: return [shell(1.5, 0.6, 1.06, 0.06)];
+    default: return [shell(1.47, 0.6, 1.04, 0.06)];
   }
 }
 
@@ -199,7 +199,7 @@ export function Figure({ character, position = [0, 0, 0], yaw = 0, actions = [],
     const sleeveR = coatLike ? 1.18 : 1;
     return (
       <group position={[side * pr.shoulderHalf * 0.92, pr.torso * 0.9, 0]} rotation={[-fwd, 0, side * out]}>
-        <mesh geometry={SPHERE} material={sleeve} position={[-side * L * 0.15, -L * 0.15, 0]} scale={[L * 1.0 * sleeveR, L * 1.05 * sleeveR, L * 1.0 * sleeveR]} castShadow />
+        <mesh geometry={SPHERE} material={sleeve} position={[-side * L * 0.25, -L * 0.35, 0]} scale={[L * 0.95 * sleeveR, L * 1.15 * sleeveR, L * 0.92 * sleeveR]} castShadow />
         <mesh geometry={taperedCapsule(L * 0.85 * sleeveR, L * 1.05 * sleeveR, pr.upperArm, 16)} material={sleeve} position={[0, -pr.upperArm, 0]} castShadow />
         <group position={[0, -pr.upperArm, 0]} rotation={[-elbow, 0, 0]}>
           <mesh geometry={taperedCapsule(L * 0.62 * sleeveR, L * 0.85 * sleeveR, pr.forearm, 16)} material={spec.outfit === 'gown' ? skin : sleeve} position={[0, -pr.forearm, 0]} castShadow />
@@ -241,16 +241,17 @@ export function Figure({ character, position = [0, 0, 0], yaw = 0, actions = [],
       {/* eyes */}
       {[-1, 1].map((sx) => (
         <group key={`eye${sx}`} position={[sx * hr * 0.33 * fc.w, hr * 0.1, hr * 0.62]}>
-          <mesh geometry={EYEBALL} material={getMaterial('eye-white')} scale={hr * 0.13} />
-          <mesh geometry={IRIS} material={getMaterial('eye-iris')} position={[0, 0, hr * 0.112]} scale={[hr * 0.085, hr * 0.085, hr * 0.03]} />
-          <mesh geometry={LID} material={skin} scale={hr * 0.142} rotation={[lidRot, 0, 0]} />
-          <mesh geometry={LID} material={skin} scale={hr * 0.14} rotation={[Math.PI + 0.55 - pose.smile * 0.15, 0, 0]} />
+          <mesh geometry={EYEBALL} material={getMaterial('eye-white')} scale={hr * 0.145} />
+          <mesh geometry={IRIS} material={getMaterial('eye-iris')} position={[0, 0, hr * 0.124]} scale={[hr * 0.078, hr * 0.078, hr * 0.03]} />
+          <mesh geometry={IRIS} material={getMaterial('matte-black')} position={[0, 0, hr * 0.138]} scale={[hr * 0.036, hr * 0.036, hr * 0.018]} />
+          <mesh geometry={LID} material={skin} scale={hr * 0.152} rotation={[lidRot, 0, 0]} />
+          <mesh geometry={LID} material={skin} scale={hr * 0.15} rotation={[Math.PI + 0.55 - pose.smile * 0.15, 0, 0]} />
         </group>
       ))}
       {/* brows */}
       {[-1, 1].map((sx) => (
-        <mesh key={`brow${sx}`} geometry={taperedCapsule(0.011 * S, 0.006 * S, hr * 0.42, 8)} material={hair}
-          position={[sx * hr * 0.15, browY - pose.browFurrow * hr * 0.03, hr * 0.9]}
+        <mesh key={`brow${sx}`} geometry={taperedCapsule(0.0062 * S, 0.0035 * S, hr * 0.34, 8)} material={hair}
+          position={[sx * hr * 0.17, browY - pose.browFurrow * hr * 0.03, hr * 0.875]} scale={[1, 1, 0.55]}
           rotation={[0.1, 0, sx * (-Math.PI / 2 + 0.12 - pose.browFurrow * 0.25 + pose.browRaise * 0.08)]} />
       ))}
       <mesh geometry={NOSE(fc.nose)} material={skin} position={[0, -hr * 0.12, hr * 0.84]} scale={[hr * 0.15, hr * 0.25, hr * 0.15]} castShadow />

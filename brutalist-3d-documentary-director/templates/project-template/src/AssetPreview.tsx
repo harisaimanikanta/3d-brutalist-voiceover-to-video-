@@ -52,7 +52,7 @@ export const AssetPreview: React.FC<AssetPreviewProps> = ({ component, props = {
   return (
     <AbsoluteFill style={{ backgroundColor: '#050304' }}>
       <ThreeCanvas width={800} height={800} flat shadows={{ type: THREE.PCFSoftShadowMap }} camera={{ fov: 30, position: [3, 2, 3] }}>
-        <LightingDirector schedule={[{ start: 0, end: 1e9, preset }]} focus={[0, 0, 0]} />
+        <LightingDirector schedule={[{ start: 0, end: 1e9, preset }]} focus={camera?.target ?? [0, 0, 0]} cameraPosition={camera?.position} />
         {camera ? (<><FixedCam {...camera} /><C {...props} /></>) : (
           <AutoFrame orbitDeg={frame * 0.5}>
             <C {...props} />

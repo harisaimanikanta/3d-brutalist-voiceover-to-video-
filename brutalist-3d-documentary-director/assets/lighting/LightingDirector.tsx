@@ -18,11 +18,16 @@ export interface LightingPreset {
   fill: { color: string; intensity: number; dir: number[] };
   exposure: number; grade: { tint: string; tintOpacity: number; vignette: number; grain: number };
   environment?: { intensity: number; rotation?: number };
+  /** v3 camera-relative subject light: a soft neutral spot from just above/beside the lens onto the camera's
+   *  look target, so whatever the shot is about is always the best-lit, most readable thing in frame. */
+  subject?: { color: string; intensity: number; angle?: number; side?: number };
   post?: { bloom?: number; bloomThreshold?: number; ao?: number; contrast?: number; saturation?: number; vignette?: number; grain?: number; dof?: number };
 }
 export const LIGHTING_PRESETS = presetsJson.presets as unknown as Record<string, LightingPreset & { description: string }>;
 
 export interface LightingCue { start: number; end: number; preset: string; overrides?: Partial<LightingPreset> }
+
+export const SUBJECT_DEFAULT = { color: '#ffe9dc', intensity: 2.2, angle: 0.42, side: 1 };
 
 const c = (a: string, b: string, t: number) => '#' + new THREE.Color(a).lerp(new THREE.Color(b), t).getHexString();
 const n = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -37,6 +42,7 @@ export function blendPresets(a: LightingPreset, b: LightingPreset, t: number): L
     rim: { color: c(a.rim.color, b.rim.color, t), intensity: n(a.rim.intensity, b.rim.intensity, t), dir: v(a.rim.dir, b.rim.dir, t) },
     fill: { color: c(a.fill.color, b.fill.color, t), intensity: n(a.fill.intensity, b.fill.intensity, t), dir: v(a.fill.dir, b.fill.dir, t) },
     exposure: n(a.exposure, b.exposure, t),
+    subject: { color: c(a.subject?.color ?? SUBJECT_DEFAULT.color, b.subject?.color ?? SUBJECT_DEFAULT.color, t), intensity: n(a.subject?.intensity ?? SUBJECT_DEFAULT.intensity, b.subject?.intensity ?? SUBJECT_DEFAULT.intensity, t), angle: n(a.subject?.angle ?? SUBJECT_DEFAULT.angle, b.subject?.angle ?? SUBJECT_DEFAULT.angle, t), side: n(a.subject?.side ?? 1, b.subject?.side ?? 1, t) },
     grade: { tint: c(a.grade.tint, b.grade.tint, t), tintOpacity: n(a.grade.tintOpacity, b.grade.tintOpacity, t), vignette: n(a.grade.vignette, b.grade.vignette, t), grain: n(a.grade.grain, b.grade.grain, t) },
     environment: { intensity: n(a.environment?.intensity ?? 0.25, b.environment?.intensity ?? 0.25, t), rotation: n(a.environment?.rotation ?? 0, b.environment?.rotation ?? 0, t) },
     post: Object.fromEntries([...new Set([...Object.keys(a.post ?? {}), ...Object.keys(b.post ?? {})])].map((key) => {
@@ -74,15 +80,19 @@ export function lightingAt(schedule: LightingCue[], frame: number, blendFrames =
 
 const dirVec = (d: number[], dist: number) => new THREE.Vector3(d[0], d[1], d[2]).normalize().multiplyScalar(dist);
 
-/** Mount once inside the canvas. `focus` = world point the key light's shadow frustum follows (camera target). */
-export function LightingDirector({ schedule, focus = [0, 0, 0], blendFrames = 36, shadowSize = 12, shadowMapSize = 2048, frame }: { schedule: LightingCue[]; focus?: [number, number, number]; blendFrames?: number; shadowSize?: number; shadowMapSize?: number; frame?: number }) {
+/** Mount once inside the canvas. `focus` = world point the key light's shadow frustum follows (camera target).
+ *  `cameraPosition` enables the v3 subject light (strongly recommended; omit only for asset previews). */
+export function LightingDirector({ schedule, focus = [0, 0, 0], cameraPosition, blendFrames = 36, shadowSize = 12, shadowMapSize = 2048, frame }: { schedule: LightingCue[]; focus?: [number, number, number]; cameraPosition?: [number, number, number]; blendFrames?: number; shadowSize?: number; shadowMapSize?: number; frame?: number }) {
   const { frame: f } = useAssetTime(frame);
   const L = useMemo(() => lightingAt(schedule, f, blendFrames), [schedule, f, blendFrames]);
+  const subj = { ...SUBJECT_DEFAULT, ...(L.subject ?? {}) };
   const { scene, gl } = useThree();
   const key = useRef<THREE.DirectionalLight>(null);
   const rim = useRef<THREE.DirectionalLight>(null);
   const fill = useRef<THREE.DirectionalLight>(null);
   const target = useMemo(() => new THREE.Object3D(), []);
+  const subjectLight = useRef<THREE.SpotLight>(null);
+  const subjectTarget = useMemo(() => new THREE.Object3D(), []);
 
   // Image-based lighting: a PMREM-filtered studio room, tinted per mood, so metals, glass, wet tissue and
   // clearcoats get real reflections instead of looking like flat plastic.
@@ -108,13 +118,30 @@ export function LightingDirector({ schedule, focus = [0, 0, 0], blendFrames = 36
       ref.current.position.copy(dirVec(spec.dir, dist).add(target.position));
       ref.current.target = target;
     }
+    if (subjectLight.current && cameraPosition) {
+      // place the subject light 0.35 of the way from the target back toward the camera, lifted and offset
+      // sideways (Rembrandt-ish 3/4), so it models faces instead of flattening them like an on-axis flash.
+      const tgt = new THREE.Vector3(...focus);
+      const camP = new THREE.Vector3(...cameraPosition);
+      const back = camP.clone().sub(tgt);
+      const d = Math.max(0.4, back.length());
+      back.normalize();
+      const side = new THREE.Vector3().crossVectors(back, new THREE.Vector3(0, 1, 0)).normalize();
+      const pos = tgt.clone().addScaledVector(back, d * 0.65)
+        .addScaledVector(side, d * 0.3 * subj.side)
+        .add(new THREE.Vector3(0, d * 0.28, 0));
+      subjectLight.current.position.copy(pos);
+      subjectTarget.position.copy(tgt);
+      subjectTarget.updateMatrixWorld();
+      subjectLight.current.target = subjectTarget;
+    }
     if (key.current) {
       const cam = key.current.shadow.camera as THREE.OrthographicCamera;
       cam.left = -shadowSize; cam.right = shadowSize; cam.top = shadowSize; cam.bottom = -shadowSize;
       cam.near = 1; cam.far = 80;
       cam.updateProjectionMatrix();
     }
-  }, [L, scene, gl, focus, target, shadowSize]);
+  }, [L, scene, gl, focus, cameraPosition, target, subjectTarget, shadowSize]);
 
   return (
     <>
@@ -123,6 +150,13 @@ export function LightingDirector({ schedule, focus = [0, 0, 0], blendFrames = 36
       <directionalLight ref={key} color={L.key.color} intensity={L.key.intensity} castShadow shadow-mapSize={[shadowMapSize, shadowMapSize]} shadow-bias={-0.0003} shadow-normalBias={0.025} shadow-radius={4} />
       <directionalLight ref={rim} color={L.rim.color} intensity={L.rim.intensity} />
       <directionalLight ref={fill} color={L.fill.color} intensity={L.fill.intensity} />
+      {cameraPosition && subj.intensity > 0 && (
+        <>
+          <primitive object={subjectTarget} />
+          {/* decay 0: constant brightness on the subject at any camera distance (exposure stays stable) */}
+          <spotLight ref={subjectLight} color={subj.color} intensity={subj.intensity} angle={subj.angle} penumbra={1} decay={0} distance={0} />
+        </>
+      )}
     </>
   );
 }

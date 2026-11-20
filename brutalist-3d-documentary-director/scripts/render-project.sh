@@ -80,6 +80,14 @@ case "$MODE" in
     IFS=',' read -ra FS <<< "$FRAMES"
     for f in "${FS[@]}"; do render still src/index.ts Documentary "out/still-$f.png" --frame="$f" --scale="${SCALE:-0.5}"; done
     ffmpeg -v error -y -pattern_type glob -i "out/still-*.png" -vf "scale=480:-1,tile=4x2" -frames:v 1 out/stills-sheet.png || true
+    # exposure check (v3): mean luma 0-255 per still. Below ~45 reads as "too dark" on a phone; above ~150 as washed out.
+    echo "── exposure (mean luma, target 55–140) ──"
+    for f in "${FS[@]}"; do
+      Y=$(ffmpeg -v error -i "out/still-$f.png" -vf "format=gray,signalstats,metadata=print:key=lavfi.signalstats.YAVG:file=-" -f null - 2>/dev/null | awk -F= '/YAVG/{printf "%.0f", $2}')
+      FLAG=""; [[ -n "$Y" && "$Y" -lt 45 ]] && FLAG="  ← TOO DARK: raise shot.lighting overrides (exposure/hemi/subject) or add practicals"
+      [[ -n "$Y" && "$Y" -gt 150 ]] && FLAG="  ← WASHED OUT: lower exposure/environment"
+      echo "  frame $f: ${Y:-?}$FLAG"
+    done
     echo "stills: out/still-*.png, sheet out/stills-sheet.png";;
   full)
     TITLE=$(python3 -c "import json,re;print(re.sub(r'[^a-z0-9]+','-',json.load(open('data/production-config.json'))['title'].lower()).strip('-') or 'documentary')")
