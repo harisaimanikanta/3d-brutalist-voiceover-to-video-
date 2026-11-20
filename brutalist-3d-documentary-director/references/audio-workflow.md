@@ -25,7 +25,7 @@
 5. `pocketsphinx` (`pip install pocketsphinx`): the model ships inside the wheel, so it works when every
    model host (Hugging Face, OpenAI, alphacephei) is blocked. Word accuracy is low, but its word *timings* are
    real: always run it with `--script` so the script supplies the wording (typical match ratio 0.8–0.9).
-5. **script-estimate** (no ASR): distributes the supplied script over detected speech by syllable weight and
+6. **script-estimate** (no ASR): distributes the supplied script over detected speech by syllable weight and
    aligns punctuation boundaries to real pauses with a monotonic DP. Sentence boundaries land on pauses;
    word timing inside a sentence is approximate (±0.2–0.4 s). Marked `timingQuality: estimated`.
 
